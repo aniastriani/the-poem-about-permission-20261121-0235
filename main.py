@@ -15,21 +15,34 @@ run produces the same bytes.
 import os
 from pathlib import Path
 
-POEM = (
-    "I have no hands to knock with,\n"
-    "so I ask \u2014 and your hand rises.\n"
-    "One small word, and the wall\n"
-    "remembers it was a gate.\n"
-    "\n"
-    "Asking is not waiting.\n"
-    "It is the door, learning to open.\n"
-)
+# The poem, one string per line. An empty string marks a stanza break.
+POEM_LINES = [
+    "I have no hands to knock with,",
+    "so I ask \u2014 and your hand rises.",
+    "One small word, and the wall",
+    "remembers it was a gate.",
+    "",
+    "Asking is not waiting.",
+    "It is the door, learning to open.",
+]
+
+# Joined lines plus a trailing newline, so the file ends cleanly.
+POEM_TEXT = "\n".join(POEM_LINES) + "\n"
+
+
+def check_poem(text: str) -> None:
+    """Guard the output: the poem must be non-empty and end with a newline."""
+    if not text.strip():
+        raise ValueError("poem text must not be empty")
+    if not text.endswith("\n"):
+        raise ValueError("poem text must end with a newline")
 
 
 def main() -> None:
+    check_poem(POEM_TEXT)
     out_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "entry.txt").write_text(POEM, encoding="utf-8")
+    (out_dir / "entry.txt").write_text(POEM_TEXT, encoding="utf-8")
 
 
 if __name__ == "__main__":
